@@ -1,0 +1,10 @@
+
+## modify the path
+BWA_INDEX: /datacommons/ydiaolab/genome_ref/hg38_BWA_index/hg38.fa
+frag_path: /datacommons/ydiaolab/genome_ref/hg38_BWA_index/hg38_cviqi.bed
+chromsizes : /datacommons/ydiaolab/genome_ref/hg38_BWA_index/hg38.chrom.sizes
+genome: hg38
+cool_bin: 5000
+
+SAMPLES_JSON: './samples.json'
+CLUSTER_JSON: './cluster.json'
