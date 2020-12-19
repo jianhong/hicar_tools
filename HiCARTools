@@ -24,12 +24,13 @@ mcool = expand("merged_cooler-{genome}/merged.{cool_bin}.mcool", genome = genome
 merge_peak = ["merged_R2/merged.ATAC.bed.gz"]
 
 read_summary = expand("reads_sumamry_info-{genome}/{sample}.read_summary", sample = SAMPLES, genome = genome)
+TARGETS.extend(read_summary)
 
 TARGETS.extend(peaks)
 TARGETS.extend(cooler)
 TARGETS.extend(mcool)
 TARGETS.extend(merge_peak)
-TARGETS.extend(read_summary)
+
 
 localrules: all
 
