@@ -50,8 +50,7 @@ e.g.
 5. run the snakemake workflow via `snakemake  -p -s HiCARTools -j [NO.of.CPU]`
 6. you can also run the job on HPC cluster scheduler. example for the SLURM system.
 ```
-snakemake --latency-wait 90 -p -s HiCARTools -j 99 --cluster-config cluster.json \
---cluster "sbatch -J {cluster.job} --mem={cluster.mem} -N 1 -n {threads} -o {cluster.out} -e {cluster.err}
+snakemake --latency-wait 50 -p -j 99 --cluster-config cluster.json --cluster "sbatch -p common,scavenger -J {cluster.job} --mem={cluster.mem} -N 1 -n {threads} -o {cluster.out} -e {cluster.err} " &> log &
 ```
 
 # Output files: 
