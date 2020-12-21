@@ -56,4 +56,7 @@ print()
 js = json.dumps(FILES_sorted, indent = 4, sort_keys=True)
 open('samples.json', 'w').writelines(js)
 
+for sample in FILES_sorted.keys():
+	print(sample)
+
 
