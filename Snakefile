@@ -1,39 +1,72 @@
 shell.prefix("set -eo pipefail; echo BEGIN at $(date); ")
 shell.suffix("; exitstat=$?; echo END at $(date); echo exit status was $exitstat; exit $exitstat")
 
+import collections
+
 configfile: "config.yaml"
+
+BWA_INDEX      = config['BWA_INDEX']
+chromsizes     = config['chromsizes']
+genome         = config['genome']
+frag_path      = config['frag_path']
+genome_version = config['species']
+tmp            = config['tmp']
+group_text     = config['grouptext']
+cool_bin       = config['cool_bin']   ## two bin resolution
 
 smooth_window  = 150
 shiftsize      = -75
-genome_version = 'hs'
 pval_thresh    = 0.01
-tmp  = '/hpc/home/yx157/scratch/tmp'
 
 FILES      = json.load(open(config['SAMPLES_JSON']))
 SAMPLES    = sorted(FILES.keys())
-BWA_INDEX  = config['BWA_INDEX']
-chromsizes = config['chromsizes']
-genome     = config['genome']
-frag_path  = config['frag_path']
-cool_bin   = config['cool_bin']
+
+## prepare the key sample
+def load_group(grouptxt):
+    '''
+    group per sample key
+    '''
+    groupid = collections.defaultdict(list)
+    with open(grouptxt,'r') as f:
+        for line in f:
+            line = line.strip()
+            if not line =='':
+                group, value = line.split("\t")
+                groupid[group].append(value)
+    return groupid
+
+groupid = load_group(group_text)
+
 
 TARGETS = []
-# peaks  = expand("macs2_peak/{sample}_{genome}_peaks.narrowPeak" , sample = SAMPLES, genome = genome)
 cooler = expand("coolers-{genome}/{sample}.{cool_bin}.cool", sample = SAMPLES, genome = genome, cool_bin = cool_bin)
+read_summary = expand("reads_sumamry_info-{genome}/{sample}.read_summary", sample = SAMPLES, genome = genome)
 
+merged_cooler = expand("merged_cooler-{genome}/{sample}.merged.{cool_bin}.cool", \
+    sample = groupid.keys(), genome = genome, cool_bin = cool_bin)
+merged_R2 = expand("merged_R2_reads-{genome}/{sample}.merged.ATAC.bed.gz", \
+    sample = groupid.keys(), genome = genome)
+
+merged_peaks = expand("merged_R2_reads-{genome}/{sample}.merged.ATAC.bed.gz",  sample = groupid.keys(), genome = genome)
+
+# peaks  = expand("macs2_peak/{sample}_{genome}_peaks.narrowPeak" , sample = SAMPLES, genome = genome) ## no need for each sample
 # mcool = expand("merged_cooler-{genome}/merged.{cool_bin}.mcool", genome = genome, cool_bin = cool_bin)
 # merge_peak = ["merged_R2/merged.ATAC.bed.gz"]
+# print(cool_bin)
+# print(groupid)
+# print(merged_R2)
+# print(cooler)
 
-read_summary = expand("reads_sumamry_info-{genome}/{sample}.read_summary", sample = SAMPLES, genome = genome)
 TARGETS.extend(read_summary)
+# TARGETS.extend(cooler)
+TARGETS.extend(merged_cooler)
+TARGETS.extend(merged_R2)
+TARGETS.extend(merged_peaks)
 
-# TARGETS.extend(peaks)
-TARGETS.extend(cooler)
-# TARGETS.extend(mcool)
-# TARGETS.extend(merge_peak)
+# print(TARGETS)
 
 
-localrules: all
+localrules: all, read_info
 
 rule all:
     input: TARGETS
@@ -56,7 +89,6 @@ rule fastq_preprocessing:
         -g ^TAC \
         -o {output[0]} -p {output[1]}  {input[0]} {input[1]}  2> {log} 
         """
-
 
 rule bwa_mem_mapping:
     input:
@@ -142,13 +174,22 @@ rule HiC_contact_matrices_Cooler:
     input:  "filtered-{genome}/{sample}.valid.pairs.gz", "filtered-{genome}/{sample}.valid.pairs.gz.px2"
     output: "coolers-{genome}/{sample}.{cool_bin}.cool"
     message: "cooler {input} "
-    params: res = {cool_bin}
+    # params: res = {cool_bin} 
     threads: 10
     shell:
         """
         cooler cload pairix --assembly hg38 --nproc {threads} \
-        --max-split 2 {chromsizes}:{params.res} {input[0]} {output}
+        --max-split 2 {chromsizes}:{wildcards.cool_bin} {input[0]} {output}
         """
+
+
+rule read_info:  
+    input:  "pairs-{genome}/{sample}.raw.pairsam.stat", "filtered-{genome}/{sample}.dedup.pairs.stat"
+    output: "reads_sumamry_info-{genome}/{sample}.read_summary"
+    threads: 1
+    script:
+        "script/read_summary.R"
+
 
 
 rule extract_R2_ATAC_reads:
@@ -174,21 +215,40 @@ rule ATAC_reads_Tn5_shifting_duplicate_remove:
         sort -k1,1 -k2,2n | uniq  | gzip -nc > {output}
         """
 
-rule ATAC_macs2_peaks:
-    input:  "peaks-{genome}/{sample}.R2.ATAC.bed.gz"
-    output: "macs2_peak/{sample}_{genome}_peaks.narrowPeak"
-    threads:1
-    params: name = "{sample}_{genome}"
+
+def get_atac_input(wildcards):
+    return expand("peaks-{genome}/{sample}.R2.ATAC.bed.gz", genome = wildcards.genome, sample = groupid[wildcards.sample])
+
+
+rule merged_ATAC_peaks:  
+    input:  get_atac_input ## sample group
+    output: "merged_R2_reads-{genome}/{sample}.merged.ATAC.bed.gz"
+    threads: 1
     shell:
         """
-        macs2 callpeak -t {input} -f BED -n {params.name}  -g {genome_version} --qval {pval_thresh} \
-        --shift {shiftsize} --extsize {smooth_window} --nomodel -B --SPMR --keep-dup all --call-summits \
-        --outdir macs2_peak 
+        zcat {input} | \
+        sort -k1,1 -k2,2n |  gzip -nc > {output}
         """
 
+
+
+# rule merged_ATAC_peaks:  
+#     input:  expand("peaks-{genome}/{sample}.R2.ATAC.bed.gz", genome = genome, sample = lambda wildcards: groupid[wildcards.group]) ## sample group
+#     output: "merged_R2_reads-{genome}/{group}.merged.ATAC.bed.gz"
+#     threads: 1
+#     shell:
+#         """
+#         zcat {input} | \
+#         sort -k1,1 -k2,2n |  gzip -nc > {output}
+#         """
+
+def get_cooler_input(wildcards):  ## group functin to define the input sample
+    return expand("coolers-{genome}/{sample}.{cool_bin}.cool", cool_bin = wildcards.cool_bin , 
+        genome = wildcards.genome, sample = groupid[wildcards.sample] )
+
 rule merge_cooler:
-    input: expand("coolers-{genome}/{sample}.{cool_bin}.cool", sample = SAMPLES, genome = genome, cool_bin = cool_bin)
-    output: expand("merged_cooler-{genome}/merged.{cool_bin}.cool", genome = genome, cool_bin = cool_bin)
+    input: get_cooler_input
+    output: "merged_cooler-{genome}/{sample}.merged.{cool_bin}.cool"
     threads:1
     shell:
         """
@@ -204,20 +264,30 @@ rule mcooler:
         """
         cooler zoomify -n 16 -o {output} -r {params.res} {input}
         """
-rule merged_ATAC_peaks:  
-    input:  expand("peaks-{genome}/{sample}.R2.ATAC.bed.gz", genome = genome,sample = SAMPLES)
-    output: "merged_R2/merged.ATAC.bed.gz"
-    threads: 1
+
+rule ATAC_macs2_peaks:
+    input:  "merged_R2_reads-{genome}/{sample}.merged.ATAC.bed.gz"
+    output: "macs2_peak/{sample}_{genome}_peaks.narrowPeak"
+    threads:1
+    params: name = "{sample}_{genome}"
     shell:
         """
-        zcat {input} | \
-        sort -k1,1 -k2,2n |  gzip -nc > {output}
+        macs2 callpeak -t {input} -f BED -n {params.name}  -g {genome_version} --qval {pval_thresh} \
+        --shift {shiftsize} --extsize {smooth_window} --nomodel -B --SPMR --keep-dup all --call-summits \
+        --outdir macs2_peak 
         """
 
 
-rule read_info:  
-    input:  "pairs-{genome}/{sample}.raw.pairsam.stat", "filtered-{genome}/{sample}.dedup.pairs.stat"
-    output: "reads_sumamry_info-{genome}/{sample}.read_summary"
-    threads: 1
-    script:
-        "script/read_summary.R"
+
+
+# rule ATAC_macs2_peaks: ## for each single sample
+#     input:  "peaks-{genome}/{sample}.R2.ATAC.bed.gz"
+#     output: "macs2_peak/{sample}_{genome}_peaks.narrowPeak"
+#     threads:1
+#     params: name = "{sample}_{genome}"
+#     shell:
+#         """
+#         macs2 callpeak -t {input} -f BED -n {params.name}  -g {genome_version} --qval {pval_thresh} \
+#         --shift {shiftsize} --extsize {smooth_window} --nomodel -B --SPMR --keep-dup all --call-summits \
+#         --outdir macs2_peak 
+#         """

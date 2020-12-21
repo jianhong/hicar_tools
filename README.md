@@ -53,6 +53,15 @@ e.g.
 snakemake --latency-wait 50 -p -j 99 --cluster-config cluster.json --cluster "sbatch -p common,scavenger -J {cluster.job} --mem={cluster.mem} -N 1 -n {threads} -o {cluster.out} -e {cluster.err} " &> log &
 ```
 
+generate cooler file at different resolution.
+merge the cooler file based on merge configure file.
+merge peak based on merged configure file
+call peaks using merged configure 
+prepare short reads using merged R2 file
+prepare long reads at different resolution for MAPS calling.
+
+
+
 # Output files: 
 ###  [pairs](https://pairtools.readthedocs.io/en/latest/formats.html) containing a list of valid contacts.
 ```
