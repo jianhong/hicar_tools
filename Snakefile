@@ -18,19 +18,19 @@ frag_path  = config['frag_path']
 cool_bin   = config['cool_bin']
 
 TARGETS = []
-peaks  = expand("macs2_peak/{sample}_{genome}_peaks.narrowPeak" , sample = SAMPLES, genome = genome)
+# peaks  = expand("macs2_peak/{sample}_{genome}_peaks.narrowPeak" , sample = SAMPLES, genome = genome)
 cooler = expand("coolers-{genome}/{sample}.{cool_bin}.cool", sample = SAMPLES, genome = genome, cool_bin = cool_bin)
 
-mcool = expand("merged_cooler-{genome}/merged.{cool_bin}.mcool", genome = genome, cool_bin = cool_bin)
-merge_peak = ["merged_R2/merged.ATAC.bed.gz"]
+# mcool = expand("merged_cooler-{genome}/merged.{cool_bin}.mcool", genome = genome, cool_bin = cool_bin)
+# merge_peak = ["merged_R2/merged.ATAC.bed.gz"]
 
 read_summary = expand("reads_sumamry_info-{genome}/{sample}.read_summary", sample = SAMPLES, genome = genome)
 TARGETS.extend(read_summary)
 
-TARGETS.extend(peaks)
+# TARGETS.extend(peaks)
 TARGETS.extend(cooler)
-TARGETS.extend(mcool)
-TARGETS.extend(merge_peak)
+# TARGETS.extend(mcool)
+# TARGETS.extend(merge_peak)
 
 
 localrules: all
