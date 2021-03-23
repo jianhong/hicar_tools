@@ -94,10 +94,10 @@ maps_output=$outdir"/MAPS_output/"$dataset_name"/"
 mkdir -p $maps_output
 echo "$dataset_name $maps_output $macs2_filepath $genomic_feat_filepath $long_bedpe_dir $short_bed_dir $bin_size $chr_count $maps_output"
 ## create the parameter table
-# $python_path $cwd/MAPS/make_maps_runfile.py $dataset_name $maps_output $macs2_filepath $genomic_feat_filepath $long_bedpe_dir $short_bed_dir $bin_size $chr_count $maps_output $sex_chroms_to_process --BINNING_RANGE $binning_range
-# echo "first"
-# $python_path $cwd/MAPS/MAPS_from_bedpe.py $maps_output"maps_"$dataset_name".maps"
-# echo "second"
+$python_path $cwd/MAPS/make_maps_runfile.py $dataset_name $maps_output $macs2_filepath $genomic_feat_filepath $long_bedpe_dir $short_bed_dir $bin_size $chr_count $maps_output $sex_chroms_to_process --BINNING_RANGE $binning_range
+echo "first"
+$python_path $cwd/MAPS/MAPS_from_bedpe.py $maps_output"maps_"$dataset_name".maps"
+echo "second"
 $Rscript_path $cwd/MAPS/MAPS_regression_and_peak_caller.r $maps_output $dataset_name"."$resolution"k" $bin_size $chr_count$sex_chroms $filter_file $model 
 $Rscript_path $cwd/MAPS/MAPS_peak_formatting.r $maps_output $dataset_name"."$resolution"k" $fdr $bin_size
 echo "third"
