@@ -1,0 +1,5 @@
+group,replicate,fastq_1,fastq_2,md5_1,md5_2
+WT,1,/Users/jianhongou/packages/hicar_tools/assets/test/WT_rep1_R1.fastq.gz,/Users/jianhongou/packages/hicar_tools/assets/test/WT_rep1_R2.fastq.gz,,
+WT,2,/Users/jianhongou/packages/hicar_tools/assets/test/WT_rep2_R1.fastq.gz,/Users/jianhongou/packages/hicar_tools/assets/test/WT_rep2_R2.fastq.gz,,
+KD,1,/Users/jianhongou/packages/hicar_tools/assets/test/KD_rep1_R1.fastq.gz,/Users/jianhongou/packages/hicar_tools/assets/test/KD_rep1_R2.fastq.gz,,
+KD,2,/Users/jianhongou/packages/hicar_tools/assets/test/KD_rep2_R1.fastq.gz,/Users/jianhongou/packages/hicar_tools/assets/test/KD_rep2_R2.fastq.gz,,
