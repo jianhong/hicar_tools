@@ -13,7 +13,7 @@
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run nf-core/hicar --input 'path/to/the/design/csv/file' --genome GRCh38 -profile docker
+nextflow run jianhong/hicar_tools --input 'path/to/the/design/csv/file' --genome GRCh38 -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -45,7 +45,7 @@ If md5_1 or md5_2 is provided, the checksums of the files will be check to make 
 Users can also run the pipeline by provide a profile file.
 
 ```bash
-nextflow run nf-core/hicar -profile 'path/to/the/profile/file' -profile docker
+nextflow run jianhong/hicar_tools -profile 'path/to/the/profile/file' -profile docker
 ```
 
 In the profile file, the design table, and more options can be defined.

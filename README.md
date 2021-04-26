@@ -2,8 +2,8 @@
 
 **This pipeline analyses data for HiCAR data, a robust and sensitive multi-omic co-assay for simultaneous measurement of transcriptome, chromatin accessibility and cis-regulatory chromatin contacts**.
 
-[![GitHub Actions CI Status](https://github.com/nf-core/hicar/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/hicar/actions)
-[![GitHub Actions Linting Status](https://github.com/nf-core/hicar/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/hicar/actions)
+<!-- TODO [![GitHub Actions CI Status](https://github.com/nf-core/hicar/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/hicar/actions)
+[![GitHub Actions Linting Status](https://github.com/nf-core/hicar/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/hicar/actions) -->
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A520.04.0-brightgreen.svg)](https://www.nextflow.io/)
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](https://bioconda.github.io/)
@@ -26,8 +26,12 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```bash
-    nextflow run nf-core/hicar -profile test,<docker/singularity/podman/shifter/charliecloud/conda/institute>
+    nextflow run jianhong/hicar_tools -profile test,<docker/singularity/podman/shifter/charliecloud/conda/institute>
     ```
+    
+    <!-- TODO ```bash
+    nextflow run nf-core/hicar -profile test,<docker/singularity/podman/shifter/charliecloud/conda/institute>
+    ``` -->
 
     > Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
 
@@ -39,7 +43,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     nextflow run nf-core/hicar -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input 'design.csv' --genome GRCh37
     ```
 
-See [usage docs](https://nf-co.re/hicar/usage) for all of the available options when running the pipeline.
+See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
+<!-- TODO See [usage docs](https://nf-co.re/hicar/usage) for all of the available options when running the pipeline. -->
 
 ## Pipeline Summary
 
@@ -59,9 +64,12 @@ By default, the pipeline currently performs the following:
 * Annotation TADs and loops (`[ChIPpeakAnno](https://bioconductor.org/packages/ChIPpeakAnno/)`)
 * Overall pipeline run summaries (`[MultiQC](https://multiqc.info/)`)
 
+![work flow of the pipeline](assets/workflow.svg)
+
 ## Documentation
 
-The nf-core/hicar pipeline comes with documentation about the pipeline: [usage](https://nf-co.re/hicar/usage) and [output](https://nf-co.re/hicar/output).
+The nf-core/hicar pipeline comes with documentation about the pipeline: [usage](docs/usage.md) and [output](docs/output.md).
+<!-- TODO The nf-core/hicar pipeline comes with documentation about the pipeline: [usage](https://nf-co.re/hicar/usage) and [output](https://nf-co.re/hicar/output). -->
 
 <!-- TODO nf-core: Add a brief overview of what the pipeline does and how it works -->
 
@@ -69,8 +77,8 @@ The nf-core/hicar pipeline comes with documentation about the pipeline: [usage](
 
 nf-core/hicar was originally written by Jianhong Ou, Yu Xiang, Yarui Diao.
 
-We thank the following people for their extensive assistance in the development
-of this pipeline:
+<!--  We thank the following people for their extensive assistance in the development
+of this pipeline: -->
 
 <!-- TODO nf-core: If applicable, make list of people who have also contributed -->
 
