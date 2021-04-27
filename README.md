@@ -28,7 +28,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     ```bash
     nextflow run jianhong/hicar_tools -profile test,<docker/singularity/podman/shifter/charliecloud/conda/institute>
     ```
-    
+
     <!-- TODO ```bash
     nextflow run nf-core/hicar -profile test,<docker/singularity/podman/shifter/charliecloud/conda/institute>
     ``` -->
@@ -64,7 +64,7 @@ By default, the pipeline currently performs the following:
 * Annotation TADs and loops (`[ChIPpeakAnno](https://bioconductor.org/packages/ChIPpeakAnno/)`)
 * Overall pipeline run summaries (`[MultiQC](https://multiqc.info/)`)
 
-![work flow of the pipeline](assets/workflow.svg)
+![work flow of the pipeline](docs/images/workflow.svg)
 
 ## Documentation
 
