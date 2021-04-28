@@ -9,3 +9,35 @@ report_section_order:
         order: -1001
 
 export_plots: true
+
+data_format: 'yaml'
+
+run_modules:
+    - fastqc
+    - cutadapt
+    - samtools
+    - macs2
+    - custom_content
+
+module_order:
+    - fastqc:
+        name: 'FastQC (raw)'
+        info: 'This section of the report shows FastQC results before adapter trimming for individual libraries.'
+        path_filters:
+            - './fastqc/*.zip'
+    - cutadapt:
+        name: 'Cutadapt'
+        info: 'This section of the report shows the length of trimmed reads by cutadapt for individual libraries.'
+    - samtools:
+        name: 'BWA_MEM'
+        info: 'This section of the report shows mapping stats for individual libraries.'
+    - macs2:
+        name: 'MACS2'
+        info: 'This section of the report shows the peak calling stats for individual libraries.'
+
+extra_fn_clean_exts:
+    - 'fastq.gz'
+
+sp:
+    cutadapt:
+        fn: '*.cutadapt.log'

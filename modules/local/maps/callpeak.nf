@@ -28,13 +28,15 @@ process MAPS_CALLPEAK {
 
     script:
     def software = "MAPS"
+    def cutoff   = options.args  ?:"12 2.0"
     def sex_chr  = options.args2 ?:""
     def model    = options.args3 ?:"pospoisson"
     def filter   = "None"
     """
     resolution=\$(bc<<<"$bin_size/1000")
     install_packages.r VGAM
-    MAPS_regression_and_peak_caller.r "maps_out/" ${meta.id}.\${resolution}k $bin_size $params.autosomal$sex_chr $filter "${meta.id}_${bin_size}/" $model
+    mv maps_out ${meta.id}_${bin_size}
+    MAPS_regression_and_peak_caller.r "${meta.id}_${bin_size}/" ${meta.id}.\${resolution}k $bin_size $params.autosomal$sex_chr $filter "${meta.id}_${bin_size}/" $cutoff $model
     echo '1.1.0' > ${software}.version.txt
     """
 }

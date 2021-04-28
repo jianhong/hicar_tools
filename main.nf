@@ -85,7 +85,7 @@ if (workflow.profile.contains('awsbatch')) {
 }
 
 // Stage config files
-ch_multiqc_config = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
+ch_multiqc_config = Channel.fromPath("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
 ch_output_docs = file("$projectDir/docs/output.md", checkIfExists: true)
 ch_output_docs_images = file("$projectDir/docs/images/", checkIfExists: true)
@@ -136,6 +136,7 @@ def getSubWorkFlowParam(modules, mods) {
 
 include { CHECKSUMS              } from './modules/local/checksums'
 include { PREPARE_GENOME         } from './modules/local/subworkflow/preparegenome' addParams(options: getSubWorkFlowParam(modules, ['gunzip', 'gtf2bed', 'chromsizes', 'genomefilter', 'bwa_index', 'gffread', 'digest_genome']))
+include { BAM_STAT               } from './modules/local/subworkflow/bam_stats' addParams(options: getSubWorkFlowParam(modules, ['samtools_sort', 'samtools_index', 'samtools_stats', 'samtools_flagstat', 'samtools_idxstats']))
 include { PAIRTOOLS_PAIRE        } from './modules/local/subworkflow/pairtools' addParams(options: getSubWorkFlowParam(modules, ['paritools_dedup', 'pairtools_flip', 'pairtools_parse', 'pairtools_restrict', 'pairtools_select', 'pairtools_select_long', 'pairtools_sort', 'pairix', 'reads_stat', 'reads_summary', 'pairsqc', 'pairsplot']))
 include { COOLER                 } from './modules/local/subworkflow/cooler' addParams(options: getSubWorkFlowParam(modules, ['cooler_cload', 'cooler_merge', 'cooler_zoomify', 'cooler_dump_per_group', 'cooler_dump_per_sample']))
 include { ATAC_PEAK              } from './modules/local/subworkflow/callatacpeak' addParams(options: getSubWorkFlowParam(modules, ['pairtools_select', 'pairtools_select_short', 'merge_reads', 'shift_reads', 'macs2_atac', 'dump_reads_per_group', 'dump_reads_per_sample', 'merge_peak']))
@@ -151,7 +152,6 @@ include { GET_SOFTWARE_VERSIONS  } from './modules/local/get_software_version'
 include { FASTQC   } from './modules/nf-core/software/fastqc/main'
 include { CUTADAPT } from './modules/nf-core/software/cutadapt/main' addParams(options: getParam(modules, 'cutadapt'))
 include { BWA_MEM  } from './modules/nf-core/software/bwa/mem/main'  addParams(options: getParam(modules, 'bwa_mem'))
-
 
 def rtitle = ''
 def rfilename = ''
@@ -198,6 +198,9 @@ workflow{
     PREPARE_GENOME.out.bwa_index
   )
   ch_software_versions = ch_software_versions.mix(BWA_MEM.out.version.ifEmpty(null))
+  // mapping stats
+  BAM_STAT(BWA_MEM.out.bam)
+  ch_software_versions = ch_software_versions.mix(BAM_STAT.out.version.ifEmpty(null))
 
   // filter reads, output pair (like hic pair), raw (pair), and stats
   PAIRTOOLS_PAIRE(
@@ -262,15 +265,21 @@ workflow{
                       .set{ch_version}
   GET_SOFTWARE_VERSIONS(ch_version)
 
-  /*if(!params.skip_multiqc){
+  if(!params.skip_multiqc){
       MULTIQC(
         GET_SOFTWARE_VERSIONS.out.ch_software_versions_yaml
                              .concat(ch_multiqc_config)
                              .concat(ch_multiqc_custom_config.collect().ifEmpty([]))
-                             .concat(FASTQC.out.html.collect().ifEmpty([]))
+                             .concat(FASTQC.out.zip.collect().ifEmpty([]))
+                             .concat(CUTADAPT.out.log.collect().ifEmpty([]))
+                             .concat(BAM_STAT.out.stats.collect().ifEmpty([]))
+                             .concat(BAM_STAT.out.flagstat.collect().ifEmpty([]))
+                             .concat(BAM_STAT.out.idxstats.collect().ifEmpty([]))
+                             .concat(ATAC_PEAK.out.xls.collect().ifEmpty([]))
+                             .concat(PAIRTOOLS_PAIRE.out.stat.collect().ifEmpty([]))
                              .collect()
       )
-  }*/
+  }
 }
 
 /*

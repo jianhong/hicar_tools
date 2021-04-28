@@ -129,8 +129,8 @@ def init(p):
             MACS2 = MACS2_full[MACS2_full['chr'] == CHR].copy()
             if not MACS2.shape[0]:
                 continue
-        MACS2['start_bin'] = np.floor(MACS2['start']/params['BIN_SIZE']).fillna(0.00)
-        MACS2['end_bin'] = np.ceil(MACS2['end']/params['BIN_SIZE']).fillna(0.00)
+        MACS2['start_bin'] = np.floor(MACS2['start']/params['BIN_SIZE']).fillna(0)
+        MACS2['end_bin'] = np.ceil(MACS2['end']/params['BIN_SIZE']).fillna(0)
         #perform this hack becasue apply returns wrong data type in some rare case
         specialCase = False
         if MACS2.iloc[0]['end_bin'] - MACS2.iloc[0]['start_bin'] == MACS2.shape[1] - 1:

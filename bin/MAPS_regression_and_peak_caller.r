@@ -19,14 +19,18 @@ options(warn=-1)
 chroms = NULL
 runs = c(1)
 RESOLUTION = NULL
+
+COUNT_CUTOFF = 12
+RATIO_CUTOFF = 2.0
+GAP = 15000
 ###
 
 args <- commandArgs(trailingOnly=TRUE)
 fltr = data.frame(chr='chrNONE',bin=-1)
 
-if (length(args) < 6 || length(args) > 7) {
+if (length(args) < 8 || length(args) > 9) {
     print('Wrong number of arguments. Stopping.')
-    print('Arguments needed (in this order): INFDIR, SET, RESOLUTION, chroms, FILTER, OUTFOLDER, regression_type.')
+    print('Arguments needed (in this order): INFDIR, SET, RESOLUTION, chroms, FILTER, OUTFOLDER, COUNT_CUTOFF, RATIO_CUTOFF, regression_type.')
     print('FILTER is optional argument. Omitt it if no filtering required.')
     print(paste('Number of arguments entered:',length(args)))
     print('Arguments entered:')
@@ -61,23 +65,21 @@ if (length(args) < 6 || length(args) > 7) {
         }
     }
     OUTFOLDER = args[6]
+    COUNT_CUTOFF = as.numeric(args[7])
+    RATIO_CUTOFF = as.numeric(args[8])
     ## this done so that the script is compatible with previous run_pipeline scripts
-    if (length(args) == 6) {
+    if (length(args) == 8) {
         REG_TYPE = 'pospoisson'
-    } else if (length(args) == 7) {
-        if (args[7] != 'pospoisson' && args[7] != 'negbinom') {
-            print(paste('wrong regression choice. Your choice:', args[7], '. Avaiable choices: pospoisson or negbinom'),sep = ' ')
+    } else if (length(args) == 9) {
+        if (args[9] != 'pospoisson' && args[9] != 'negbinom') {
+            print(paste('wrong regression choice. Your choice:', args[9], '. Avaiable choices: pospoisson or negbinom'),sep = ' ')
             quit()
         }
-        REG_TYPE = args[7]
+        REG_TYPE = args[9]
     }
 }
 print('filter used (if any):')
 if (args[5] == 'None') { print('None')} else { print(fltr) }
-
-COUNT_CUTOFF = 12
-RATIO_CUTOFF = 2.0
-GAP = 15000
 
 ## loading data
 mm_combined_and = data.frame()

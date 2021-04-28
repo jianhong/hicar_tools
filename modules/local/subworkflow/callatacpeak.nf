@@ -53,7 +53,8 @@ workflow ATAC_PEAK {
   ch_version = ch_version.mix(DUMPREADS.out.version)
 
   emit:
-  peak       = MACS2_CALLPEAK.out.peak       // channel: [ val(meta), path(bed) ]
+  peak       = MACS2_CALLPEAK.out.peak       // channel: [ val(meta), path(peak) ]
+  xls        = MACS2_CALLPEAK.out.xls        // channel: [ val(meta), path(xls) ]
   mergedpeak = MERGE_PEAK.out.peak           // channel: [ path(bed) ]
   reads      = DUMPREADS.out.peak            // channel: [ val(meta), path(bed) ]
   samplereads= DUMPREADS_SAMPLE.out.peak     // channel: [ val(meta), path(bed) ]

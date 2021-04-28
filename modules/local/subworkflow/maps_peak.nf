@@ -1,5 +1,5 @@
 /*
- * Createing Genomic Features Files
+ * Call interaction peaks by MAPS
  */
 include { initOptions } from './functions'
 params.options = [:]
