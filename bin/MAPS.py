@@ -155,7 +155,8 @@ def init(p):
             ##### getting overlap
             ## load long.bed file
             ps_long = pd.read_csv(parse_fname(CHR, 'long', params),header=None,sep='\t')
-            long_cols = ['chr1','start1','end1','chr2','start2','end2']
+            #long_cols = ['chr1','start1','end1','chr2','start2','end2']
+            long_cols = ['chr1','start1','end1','chr2','start2','end2', 'count'] # import count directly from cooler exported files.
             ps_long.rename(columns=dict(zip(ps_long.columns[0:], long_cols)),inplace=True)
             ps_long = ps_long.astype({'chr1':str, 'chr2':str})
             ## filter only reads at the same chromosome and proper orientation
@@ -165,8 +166,9 @@ def init(p):
                 ps_long['read2_bin_mid'] = ((ps_long['start2'] + ps_long['end2']) / 2.0)//params['BIN_SIZE']
                 ps_long['bin1_mid'] = ps_long.loc[:,['read1_bin_mid','read2_bin_mid']].min(axis=1)
                 ps_long['bin2_mid'] = ps_long.loc[:,['read1_bin_mid','read2_bin_mid']].max(axis=1)
-                ps_long['count'] = 1
-                count_data = ps_long[['bin1_mid', 'bin2_mid','count']].groupby(['bin1_mid','bin2_mid']).count()
+#                 ps_long['count'] = 1
+#                 count_data = ps_long[['bin1_mid', 'bin2_mid','count']].groupby(['bin1_mid','bin2_mid']).count()
+                count_data = ps_long[['bin1_mid', 'bin2_mid', 'count']] # use the count from cooler bedpe files.
                 count_data.reset_index(inplace=True)
                 count_data_and = count_data[(count_data['bin1_mid'].isin(MACS2_peak_ranges_list)) & (count_data['bin2_mid'].isin(MACS2_peak_ranges_list))].copy()
                 count_data_and = count_data_and[(np.abs(count_data_and['bin1_mid'] - count_data_and['bin2_mid']) <= params['BIN_RANGE'])
