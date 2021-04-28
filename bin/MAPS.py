@@ -64,7 +64,7 @@ def load_metadata(GF_PATH, BIN_SIZE):
         metadata_full['bin2_mid'] = metadata_full['bin1_mid']
         metadata_full['bin'] = metadata_full['bin1_mid']
     except pd.errors.EmptyDataError:
-        metadata_full = MACS2_full = pd.DataFrame(columns=['chr','start','end','effective_length','gc','mappability','bin1_mid','bin2_mid','bin'])
+        metadata_full = pd.DataFrame(columns=['chr','start','end','effective_length','gc','mappability','bin1_mid','bin2_mid','bin'])
     return(metadata_full)
 
 def parse_fname(chrom, type, params):
