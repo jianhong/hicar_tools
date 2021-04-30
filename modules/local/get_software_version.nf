@@ -11,11 +11,11 @@ process GET_SOFTWARE_VERSIONS {
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:"pipeline_info", meta:[:], publish_by_meta:[]) },
         enabled: options.publish
 
-    conda (params.conda ? "bioconda::sed=4.7.0" : null)
+    conda (params.conda ? "bioconda::samtools=1.10" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/sed:4.7.0"
+        container "https://depot.galaxyproject.org/singularity/samtools:1.10--h9402c20_2"
     } else {
-        container "quay.io/biocontainers/sed:4.7.0"
+        container "quay.io/biocontainers/samtools:1.10--h9402c20_2"
     }
 
     input:
