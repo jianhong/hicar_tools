@@ -7,7 +7,7 @@ options        = initOptions(params.options)
 process DIFFHICAR {
     tag "$bin_size"
     label 'process_high'
-    label 'error_retryThenIgnore'
+    label 'error_ignore'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:bin_size) },
