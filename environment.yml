@@ -6,12 +6,39 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - conda-forge::python=3.7.3
-  - conda-forge::markdown=3.1.1
-  - conda-forge::pymdown-extensions=6.0
-  - conda-forge::pygments=2.5.2
+  - conda-forge::python=3.6.13
+  - conda-forge::biopython=1.78
+  - conda-forge::bzip2=1.0.8
+  - conda-forge::markdown=3.3.4
+  - conda-forge::pandas=1.1.5
+  - conda-forge::perl=5.26.2
+  - conda-forge::pigz=2.4
+  - conda-forge::pymdown-extensions=8.1.1
+  - conda-forge::pygments=2.8.1
+  - conda-forge::r-base=4.0.3
+  - conda-forge::r-ggplot2=3.3.3
+  - conda-forge::r-magrittr=2.0.1
+  - conda-forge::r-nlme=3.1_152
+  - conda-forge::r-optparse=1.6.6
   # TODO nf-core: Add required software dependencies here
-  - bioconda::fastqc=0.11.8
-  - bioconda::multiqc=1.7
-  - bioconda::cutadapt=3.2
-  
+  - bioconda::bioconductor-biomart=2.46.3
+  - bioconda::bioconductor-chippeakanno=3.24.1
+  - bioconda::bioconductor-clusterprofiler=3.18.1
+  - bioconda::bioconductor-edger=3.32.1
+  - bioconda::bioconductor-genomeinfodb=1.26.4
+  - bioconda::bioconductor-pathview=1.30.1
+  - bioconda::bioconductor-rtracklayer=1.50.0
+  - bioconda::bwa=0.7.17
+  - bioconda::cooler=0.8.11
+  - bioconda::cutadapt=3.4
+  - bioconda::fastqc=0.11.9
+  - bioconda::genmap=1.2.0
+  - bioconda::gffread=0.12.1
+  - bioconda::macs2=2.2.7.1
+  - bioconda::multiqc=1.10.1
+  - bioconda::nextflow=20.10.0
+  - bioconda::pairix=0.3.7
+  - bioconda::pairtools=0.3.0
+  - bioconda::samtools=1.11
+  - bioconda::ucsc-bigwigaverageoverbed=366
+  - bioconda::ucsc-wigtobigwig=357
