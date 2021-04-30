@@ -135,12 +135,6 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true
                 },
-                "save_macs_pileup":{
-                    "type": "boolean",
-                    "description": "save macs pileup or not",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true
-                },
                 "skip_peak_qc":{
                     "type": "boolean",
                     "description": "skip peak QC or not",
@@ -151,41 +145,23 @@
                     "type": "boolean",
                     "description": "skip peak annotation or not",
                     "fa_icon": "fas fa-ban",
-                    "hidden": true
-                },
-                "skip_consensus_peaks":{
-                    "type": "boolean",
-                    "description": "skip calculate peak consensus or not",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true
+                    "hidden": false
                 },
                 "skip_diff_analysis":{
                     "type": "boolean",
                     "description": "skip differential analysis or not",
                     "fa_icon": "fas fa-ban",
-                    "hidden": true
+                    "hidden": false
                 },
                 "skip_fastqc":{
                     "type": "boolean",
                     "description": "skip fastqc or not",
                     "fa_icon": "fas fa-ban",
-                    "hidden": true
+                    "hidden": false
                 },
                 "skip_plot_profile":{
                     "type": "boolean",
                     "description": "skip plot profile or not",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true
-                },
-                "skip_plot_fingerprint":{
-                    "type": "boolean",
-                    "description": "skip plot fingerprint or not",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true
-                },
-                "skip_spp":{
-                    "type": "boolean",
-                    "description": "skip SPP or not",
                     "fa_icon": "fas fa-ban",
                     "hidden": true
                 },
