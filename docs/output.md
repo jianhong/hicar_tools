@@ -161,9 +161,11 @@ MAPS is a model-based analysis of long-range chromatin interactions.
 
 ## Differential analysis
 
-Differential analysis for the TADs and loops by [baySeq](https://pubmed.ncbi.nlm.nih.gov/20698981/).
+Differential analysis for the TADs and loops by [edgeR](https://pubmed.ncbi.nlm.nih.gov/19910308/).
 The input counts are filtered counts dumped by pairtools for each samples.
 The differential analysis is done for validated TADs and loops by MAPs.
+Annotation is done by [ChIPpeakAnno](https://pubmed.ncbi.nlm.nih.gov/20459804/)
+for the overlap features (gene level) or nearest features.
 
 **Output files:**
 

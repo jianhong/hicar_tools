@@ -2,7 +2,7 @@
 
 #######################################################################
 #######################################################################
-## Created on Nov. 10, 2020 call DiffBind 3.0
+## Created on Nov. 10, 2020 enrichment analysis
 ## Copyright (c) 2020 Jianhong Ou (jianhong.ou@gmail.com)
 #######################################################################
 #######################################################################
@@ -18,9 +18,15 @@ library(clusterProfiler)
 library(pathview)
 library(biomaRt)
 library(optparse)
+writeLines(as.character(packageVersion("ChIPpeakAnno")), "ChIPpeakAnno.version.txt")
+writeLines(as.character(packageVersion("clusterProfiler")), "clusterProfiler.version.txt")
+writeLines(as.character(packageVersion("pathview")), "pathview.version.txt")
+writeLines(as.character(packageVersion("biomaRt")), "biomaRt.version.txt")
+
 
 option_list <- list(make_option(c("-s", "--species"), type="character", default=NULL, help="species", metavar="string"),
                     make_option(c("-n", "--ucscname"), type="character", default=NULL, help="ucscname", metavar="string"),
+                    make_option(c("-o", "--output"), type="character", default=".", help="output folder", metavar="string"),
                     make_option(c("-c", "--cores"), type="integer", default=1, help="Number of cores", metavar="integer"))
 
 opt_parser <- OptionParser(option_list=option_list)
@@ -30,6 +36,13 @@ if (is.null(opt$species)){
   print_help(opt_parser)
   stop("Please provide species.", call.=FALSE)
 }
+if (!is.null(opt$output)){
+  pf <- opt$output
+}else{
+  pf <- "."
+}
+
+dir.create(pf, recursive = TRUE, showWarnings = FALSE)
 
 attr <- c("hsapiens_homolog_associated_gene_name")
 scientificName <- c("GRCh37"="Homo sapiens",
@@ -112,10 +125,11 @@ shortStrs <- function(strs, len=60){
   make.unique(strs)
 }
 
-files <- dir(".", "DiffBind.res..*.all.csv", recursive = TRUE, full.names = TRUE)
+files <- dir(".", "DEtable.*.anno.csv", recursive = TRUE, full.names = TRUE)
+files <- files[!grepl("padj", files)]
 gmt <- "ftp.broadinstitute.org://pub/gsea/gene_sets/c2.all.v7.2.symbols.gmt"
 for(file in files){
-  data <- read.csv(file, row.names = 1)
+  data <- read.csv(file)
   if(length(data$gene)!=nrow(data)){
     data$gene <- data$symbol
   }
@@ -133,15 +147,15 @@ for(file in files){
                  readable = TRUE
       )
     })
-    pff <- file.path("enrichment", basename(dirname(file)))
+    pff <- file.path(pf, basename(dirname(file)))
     dir.create(pff, recursive = TRUE)
     
     null <- mapply(ego, names(ego), FUN=function(.ele, .name){
-      write.csv(.ele, file.path(pff, paste0("GO.", .name, ".enrichment.for.fdr0.05.csv")))
+      write.csv(.ele, file.path(pff, paste0("GO.", .name, ".enrichment.for.padj0.05.csv")))
       
       .ele <- as.data.frame(.ele)
       if(nrow(.ele)>1){
-        .ele$qvalue <- -log10(.ele$p.adjust)
+        .ele$qvalue <- -log10(.ele$PValue)
         plotdata <- .ele[!is.na(.ele$qvalue), c("Description", "qvalue", "Count")]
         if(nrow(plotdata)>20) plotdata <- plotdata[1:20, ]
         plotdata$Description <- shortStrs(plotdata$Description)
@@ -151,7 +165,7 @@ for(file in files){
           geom_text(vjust=-.1) +
           xlab("") + ylab("-log10(p-value)") +
           theme_classic() + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
-        ggsave(file.path(pff, paste("GO.", .name, ".enrichment.for.fdr0.05.top.pdf", sep = ".")), width = 6, height = 6)
+        ggsave(file.path(pff, paste("GO.", .name, ".enrichment.for.padj0.05.top.pdf", sep = ".")), width = 6, height = 6)
       }
     })
     
@@ -161,14 +175,18 @@ for(file in files){
     symbol <- lapply(eid, function(.ele) gene.df[match(.ele, gene.df$ENTREZID), "SYMBOL"])
     symbol <- sapply(symbol, paste, collapse="/")
     kk$geneSYM <- symbol
-    write.csv(kk, file.path(pff, "KEGGenrichment.for.fdr0.05.csv"))
+    write.csv(kk, file.path(pff, "KEGGenrichment.for.padj0.05.csv"))
     
     ds <- data$log2FoldChange
     gene.df <- bitr(data$gene,
                     fromType=ifelse(grepl("^ENS", as.character(data.s$gene)[1]),
                                     "ENSEMBL", "SYMBOL"),
                     toType = c("ENTREZID", "SYMBOL"), OrgDb = org)
-    names(ds) <- gene.df[match(data$gene, gene.df$ENSEMBL), "ENTREZID"] 
+    names(ds) <- 
+      gene.df[match(data$gene, 
+                    gene.df[, ifelse(grepl("^ENS", 
+                                           as.character(data.s$gene)[1]),
+                                     "ENSEMBL", "SYMBOL")]), "ENTREZID"] 
     ds <- ds[!is.na(names(ds))]
     ds <- ds[!is.na(ds)]
     
@@ -203,8 +221,7 @@ for(file in files){
     data.rnk <- data.rnk[data.rnk[, 1]!="", ]
     write.table(data.rnk, file = rnk, quote=FALSE, row.names = FALSE, sep="\t")
     rpt_label <- "c2.all.v7.2"
-    outfolder <- file.path(pff, "enrichment")
-    
+    outfolder <- file.path(pff, "GSEA")
     cmd <- paste("gsea-cli.sh GSEAPreranked -gmx", gmt, "-norm meandiv -nperm 1000 -rnk",
                  rnk, "-scoring_scheme weighted -rpt_label", rpt_label, 
                  "-create_svgs true -make_sets true -plot_top_x 100 -rnd_seed timestamp -set_max 500 -set_min 15 -zip_report false -out",

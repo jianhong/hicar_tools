@@ -9,27 +9,28 @@ process DIFFHICAR {
     label 'process_high'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:bin_size) }
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:bin_size) },
+        enabled: options.publish
 
-    conda (params.enable_conda ? "bioconda::bioconductor-deseq2=1.30.1" : null)
+    conda (params.enable_conda ? "bioconda::bioconductor-edger=3.32.1" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-deseq2:1.30.1--r40h399db7b_0"
+        container "https://depot.galaxyproject.org/singularity/bioconductor-edger:3.32.1--r40h399db7b_0"
     } else {
-        container "quay.io/biocontainers/bioconductor-deseq2:1.30.1--r40h399db7b_0"
+        container "quay.io/biocontainers/bioconductor-edger:3.32.1--r40h399db7b_0"
     }
 
     input:
-    tuple val(meta), val(bin_size), path(bedpe)
+    tuple val(bin_size), path(peaks, stageAs: "peaks/*"), path(long_bedpe, stageAs: "long/*")
 
     output:
-    tuple val(meta), val(bin_size), path("diffhic/*"), emit: diff
-    path "*.version.txt"                             , emit: version
+    tuple val(bin_size), path("diffhic_bin${bin_size}/*"), emit: diff
+    path "*.version.txt"                  , emit: version
 
     script:
     """
-    echo '${metadata}' > designtab.txt
-    diffhicar.r -d 'designtab.txt' \\
+    install_packages.r edgeR
+    diffhicar.r diffhic_bin${bin_size} \\
         $options.args
-    ## must output the packaes version as *.version.txt
+    ## must output the packages version as *.version.txt
     """
 }

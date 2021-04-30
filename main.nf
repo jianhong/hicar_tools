@@ -143,6 +143,8 @@ include { ATAC_PEAK              } from './modules/local/subworkflow/callatacpea
 include { MAPS_MULTIENZYME       } from './modules/local/subworkflow/multienzyme'   addParams(options: getSubWorkFlowParam(modules, ['maps_cut', 'maps_fend', 'genmap_mappability', 'ucsc_wigtobigwig', 'maps_mapability', 'maps_merge', 'maps_feature']))
 include { MAPS_PEAK              } from './modules/local/subworkflow/maps_peak' addParams(options: getSubWorkFlowParam(modules, ['maps_maps', 'maps_callpeak', 'maps_reformat']))
 include { DIFFHICAR              } from './modules/local/bioc/diffhicar' addParams(options: getParam(modules, 'diffhicar'))
+include { BIOC_CHIPPEAKANNO      } from './modules/local/bioc/chippeakanno' addParams(options: getParam(modules, 'chippeakanno'))
+include { BIOC_ENRICH            } from './modules/local/bioc/enrich' addParams(options: getParam(modules, 'enrichment'))
 include { GET_SOFTWARE_VERSIONS  } from './modules/local/get_software_version'
 
 ////////////////////////////////////////////////////
@@ -247,10 +249,23 @@ workflow{
   // Differential analysis
   if(!params.skip_diff_analysis){
     MAPS_PEAK.out.peak //[]
-             .map{meta, bin_size, peak -> [bin_size, meta, peak]}
+             .map{meta, bin_size, peak -> [bin_size, peak]}
              .groupTuple()
+             .cross(COOLER.out.samplebedpe.map{[it[0].bin, it[1]]}.groupTuple())
+             .map{ peak, long_bedpe -> [peak[0], peak[1].flatten(), long_bedpe[1].flatten()] }//bin_size, meta, peak, long_bedpe
+             .groupTuple()
+             .map{[it[0], it[1].flatten().unique(), it[2].flatten()]}
              .set{ch_diffhicar}
+    //ch_diffhicar.view()
     DIFFHICAR(ch_diffhicar)
+    ch_software_versions = ch_software_versions.mix(DIFFHICAR.out.version.ifEmpty(null))
+    //annotation
+    if(!params.skip_peak_annotation){
+        BIOC_CHIPPEAKANNO(DIFFHICAR.out.diff, PREPARE_GENOME.out.gtf)
+        ch_software_versions = ch_software_versions.mix(BIOC_CHIPPEAKANNO.out.version.ifEmpty(null))
+        BIOC_ENRICH(BIOC_CHIPPEAKANNO.out.anno)
+        ch_software_versions = ch_software_versions.mix(BIOC_ENRICH.out.version.ifEmpty(null))
+    }
   }
 
   //annotation
@@ -270,12 +285,12 @@ workflow{
         GET_SOFTWARE_VERSIONS.out.ch_software_versions_yaml
                              .concat(ch_multiqc_config)
                              .concat(ch_multiqc_custom_config.collect().ifEmpty([]))
-                             .concat(FASTQC.out.zip.collect().ifEmpty([]))
-                             .concat(CUTADAPT.out.log.collect().ifEmpty([]))
-                             .concat(BAM_STAT.out.stats.collect().ifEmpty([]))
-                             .concat(BAM_STAT.out.flagstat.collect().ifEmpty([]))
-                             .concat(BAM_STAT.out.idxstats.collect().ifEmpty([]))
-                             .concat(ATAC_PEAK.out.xls.collect().ifEmpty([]))
+                             .concat(FASTQC.out.zip.map{it[1]}.collect().ifEmpty([]))
+                             .concat(CUTADAPT.out.log.map{it[1]}.collect().ifEmpty([]))
+                             .concat(BAM_STAT.out.stats.map{it[1]}.collect().ifEmpty([]))
+                             .concat(BAM_STAT.out.flagstat.map{it[1]}.collect().ifEmpty([]))
+                             .concat(BAM_STAT.out.idxstats.map{it[1]}.collect().ifEmpty([]))
+                             .concat(ATAC_PEAK.out.xls.map{it[1]}.collect().ifEmpty([]))
                              .concat(PAIRTOOLS_PAIRE.out.stat.collect().ifEmpty([]))
                              .collect()
       )

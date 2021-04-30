@@ -60,7 +60,7 @@ By default, the pipeline currently performs the following:
 * Create cooler files for visualization (`[cooler](https://cooler.readthedocs.io/en/latest/index.html)`)
 * Call peaks for ATAC reads (R2 reads) (`[MACS2](https://macs3-project.github.io/MACS/)`)
 * Find TADs and loops (`[MAPS](https://github.com/ijuric/MAPS)`)
-* Differential analysis (`[baySeq](https://bioconductor.org/packages/baySeq/)`)
+* Differential analysis (`[edgeR](https://bioconductor.org/packages/edgeR/)`)
 * Annotation TADs and loops (`[ChIPpeakAnno](https://bioconductor.org/packages/ChIPpeakAnno/)`)
 * Overall pipeline run summaries (`[MultiQC](https://multiqc.info/)`)
 
@@ -131,8 +131,8 @@ In addition, references of tools and data used in this pipeline are as follows:
 * [GenMap](https://pubmed.ncbi.nlm.nih.gov/32246826/)
   > Pockrandt C, Alzamel M, Iliopoulos CS, Reinert K. GenMap: ultra-fast computation of genome mappability. Bioinformatics. 2020 Jun 1;36(12):3687-3692. doi: 10.1093/bioinformatics/btaa222. PMID: 32246826; PMCID: PMC7320602.
 
-* [baySeq](https://pubmed.ncbi.nlm.nih.gov/20698981/)
-  > Hardcastle TJ, Kelly KA. baySeq: empirical Bayesian methods for identifying differential expression in sequence count data. BMC Bioinformatics. 2010 Aug 10;11:422. doi: 10.1186/1471-2105-11-422. PMID: 20698981; PMCID: PMC2928208.
+* [edgeR](https://pubmed.ncbi.nlm.nih.gov/19910308/)
+  > Robinson MD, McCarthy DJ, Smyth GK. edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics. 2010 Jan 1;26(1):139-40. doi: 10.1093/bioinformatics/btp616. Epub 2009 Nov 11. PMID: 19910308; PMCID: PMC2796818.
 
 * [ChIPpeakAnno](https://pubmed.ncbi.nlm.nih.gov/20459804/)
   > Zhu LJ, Gazin C, Lawson ND, Pagès H, Lin SM, Lapointe DS, Green MR. ChIPpeakAnno: a Bioconductor package to annotate ChIP-seq and ChIP-chip data. BMC Bioinformatics. 2010 May 11;11:237. doi: 10.1186/1471-2105-11-237. PMID: 20459804; PMCID: PMC3098059.

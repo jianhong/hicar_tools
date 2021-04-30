@@ -2,6 +2,7 @@
 from __future__ import print_function
 from collections import OrderedDict
 import re
+import os
 
 # TODO nf-core: Add additional regexes for new tools in process get_software_versions
 regexes = {
@@ -24,6 +25,17 @@ for k, v in regexes.items():
                 results[k] = "v{}".format(match.group(1))
     except IOError:
         results[k] = False
+
+# Search software.version.txt
+version_files = [x for x in os.listdir('.') if x.endswith('.version.txt')]
+for version_file in version_files:
+
+    software = version_file.replace('.version.txt','')
+
+    with open(version_file) as fin:
+        version = fin.read().strip()
+
+    results[software] = version
 
 # Remove software set to false in results
 for k in list(results):

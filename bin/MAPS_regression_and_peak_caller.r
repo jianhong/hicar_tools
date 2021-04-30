@@ -111,14 +111,16 @@ dataset_length = dataset_length_and + dataset_length_xor
 ## doing statistics and resampling
 
 pospoisson_regression <- function(mm, dataset_length) {
-    fit <- vglm(count ~ logl + loggc + logm + logdist + logShortCount, family = pospoisson(), data = mm)
+    # fit <- vglm(count ~ logl + loggc + logm + logdist + logShortCount, family = pospoisson(), data = mm)
+    fit <- vglm(count ~ loggc + logm + logdist + logShortCount, family = pospoisson(), data = mm)
     mm$expected = fitted(fit)
     mm$p_val = ppois(mm$count, mm$expected, lower.tail = FALSE, log.p = FALSE) / ppois(0, mm$expected, lower.tail = FALSE, log.p = FALSE)
     m1 = mm[ mm$p_val > 1/length(mm$p_val),]
-    fit <- vglm(count ~ logl + loggc + logm + logdist + logShortCount, family = pospoisson(), data = m1)
+    # fit <- vglm(count ~ logl + loggc + logm + logdist + logShortCount, family = pospoisson(), data = m1)
+    fit <- vglm(count ~  loggc + logm + logdist + logShortCount, family = pospoisson(), data = m1)
     coeff<-round(coef(fit),10)
-    mm$expected2 <- round(exp(coeff[1] + coeff[2]*mm$logl + coeff[3]*mm$loggc + coeff[4]*mm$logm +
-coeff[5]*mm$logdist + coeff[6]*mm$logShortCount), 10)
+    # mm$expected2 <- round(exp(coeff[1] + coeff[2]*mm$logl + coeff[3]*mm$loggc + coeff[4]*mm$logm + coeff[5]*mm$logdist + coeff[6]*mm$logShortCount), 10)
+	mm$expected2 <- round(exp(coeff[1]  + coeff[2]*mm$loggc + coeff[3]*mm$logm + coeff[4]*mm$logdist + coeff[5]*mm$logShortCount), 10)
     mm$expected2 <- mm$expected2 /(1-exp(-mm$expected2))
     mm$ratio2 <- mm$count / mm$expected2
     mm$p_val_reg2 = ppois(mm$count, mm$expected2, lower.tail = FALSE, log.p = FALSE) / ppois(0, mm$expected2, lower.tail = FALSE, log.p = FALSE)
@@ -128,17 +130,19 @@ coeff[5]*mm$logdist + coeff[6]*mm$logShortCount), 10)
 }
 
 negbinom_regression <- function(mm, dataset_length) {
-    fit <- glm.nb(count ~ logl + loggc + logm + logdist + logShortCount, data = mm)
+    #fit <- glm.nb(count ~ logl + loggc + logm + logdist + logShortCount, data = mm)
+    fit <- glm.nb(count ~  loggc + logm + logdist + logShortCount, data = mm)
     mm$expected = fitted(fit)
     sze = fit$theta ##size parameter
     mm$p_val = pnbinom(mm$count, mu = mm$expected, size = sze, lower.tail = FALSE)
     m1 = mm[ mm$p_val > ( 1 / length(mm$p_val)),]
     ## second regression
-    fit <- glm.nb(count ~ logl + loggc + logm + logdist + logShortCount, data = m1)
+    # fit <- glm.nb(count ~ logl + loggc + logm + logdist + logShortCount, data = m1)
+    fit <- glm.nb(count ~  loggc + logm + logdist + logShortCount, data = m1)
     coeff<-round(fit$coefficients,10)
     sze = fit$theta
-    mm$expected2 <- round(exp(coeff[1] + coeff[2]*mm$logl + coeff[3]*mm$loggc + coeff[4]*mm$logm + coeff[5]*mm$logdist +
-coeff[6]*mm$logShortCount), 10) ## mu parameter
+    #mm$expected2 <- round(exp(coeff[1] + coeff[2]*mm$logl + coeff[3]*mm$loggc + coeff[4]*mm$logm + coeff[5]*mm$logdist + coeff[6]*mm$logShortCount), 10) ## mu parameter
+	mm$expected2 <- round(exp(coeff[1]  + coeff[2]*mm$loggc + coeff[3]*mm$logm + coeff[4]*mm$logdist + coeff[5]*mm$logShortCount), 10) ## mu parameter
     mm$ratio2 <- mm$count / mm$expected2
     mm$p_val_reg2 = pnbinom(mm$count, mu = mm$expected2, size = sze, lower.tail = FALSE)
     mm$p_bonferroni = mm$p_val_reg2 * dataset_length
@@ -230,7 +234,10 @@ classify_peaks <- function(final) {
 
     # only keep unique peak clusters, not bin pairs
     x <- unique( final[ final$label != 0, c('chr', 'label', 'NegLog10P', 'ClusterSize')] )
-    dim(x)
+    if(nrow(x)==0){
+        final$ClusterType <- 'Singleton'
+        return(final)
+    }
 
     # sort rows by cumulative -log10 P-value
     x <- x[ order(x$NegLog10P) ,]
@@ -256,7 +263,7 @@ classify_peaks <- function(final) {
     final$ClusterType[ final$label==0 ] <- 'Singleton'
     final$ClusterType[ final$label>=1 & final$NegLog10P<RefValue  ] <-  'SharpPeak'
     final$ClusterType[ final$label>=1 & final$NegLog10P>=RefValue  ] <- 'BroadPeak'
-    table(final$ClusterType)
+    #table(final$ClusterType)
     return(final)
 }
 

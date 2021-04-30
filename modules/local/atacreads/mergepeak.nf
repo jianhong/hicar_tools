@@ -26,7 +26,7 @@ process MERGE_PEAK {
     path  "*.version.txt"          , emit: version
 
     script:
-    def software = getSoftwareName(task.process)
+    def software = "bedtools"
     """
     cat *.narrowPeak | cut -f1-3 | sort -k1,1 -k2,2n |
     bedtools merge $options.args \\

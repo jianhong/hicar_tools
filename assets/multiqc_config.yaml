@@ -38,6 +38,20 @@ module_order:
 extra_fn_clean_exts:
     - 'fastq.gz'
 
+custom_data:
+    reads_summary:
+        file_format: 'tsv'
+        section_name: 'Reads stats'
+        descripton: 'This section of the report shows the stats of total reads, duplicate reads, trans, cis, and long range reads counts for each sample.'
+        plot_type: 'table'
+        pconfig:
+            id: 'reads_summary'
+            title: 'HiCAR reads stats summary'
+
 sp:
     cutadapt:
         fn: '*.cutadapt.log'
+    macs2:
+        fn: '*_peaks.xls'
+    reads_summary:
+        fn: 'reads_summary.tsv'
