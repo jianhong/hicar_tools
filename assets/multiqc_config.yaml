@@ -40,7 +40,7 @@ extra_fn_clean_exts:
 
 custom_data:
     reads_summary:
-        file_format: 'tsv'
+        file_format: 'csv'
         section_name: 'Reads stats'
         descripton: 'This section of the report shows the stats of total reads, duplicate reads, trans, cis, and long range reads counts for each sample.'
         plot_type: 'table'
@@ -54,4 +54,4 @@ sp:
     macs2:
         fn: '*_peaks.xls'
     reads_summary:
-        fn: 'reads_summary.tsv'
+        fn: 'reads_summary.csv'

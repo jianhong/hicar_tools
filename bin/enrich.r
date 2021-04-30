@@ -70,6 +70,7 @@ scientificName <- c("GRCh37"="Homo sapiens",
                     "AGPv3"="Zea mays",
                     "hg38"="Homo sapiens",
                     "hg19"="Homo sapiens",
+                    "hg38"="Homo sapiens",
                     "mm10"="Mus musculus",
                     "bosTau8"="Bos taurus",
                     "ce10"="Caenorhabditis elegans",
@@ -82,6 +83,9 @@ scientificName <- c("GRCh37"="Homo sapiens",
                     "rn6"="Rattus norvegicus",
                     "sacCer3"="Saccharomyces cerevisiae",
                     "susScr3"="Sus scrofa")
+if(is.null(opt$ucscname)){
+  opt$ucscname <- opt$species
+}
 if(opt$ucscname %in% names(scientificName)){
   scientificName <- scientificName[opt$ucscname]
 }else{
@@ -104,7 +108,7 @@ if(file.access(lib[1], mode=2)!=0){
   dir.create(pwd)
   .libPaths(c(pwd, lib))
 }
-BiocManager::install(org, update = FALSE, ask = FALSE)
+while(!require(org, character.only = TRUE)) BiocManager::install(org, update = FALSE, ask = FALSE)
 library(org, character.only = TRUE)
 organism <- ChIPpeakAnno:::.findKEGGRESTOrganismName(org)
 org <- get(org)
@@ -127,6 +131,7 @@ shortStrs <- function(strs, len=60){
 
 files <- dir(".", "DEtable.*.anno.csv", recursive = TRUE, full.names = TRUE)
 files <- files[!grepl("padj", files)]
+
 gmt <- "ftp.broadinstitute.org://pub/gsea/gene_sets/c2.all.v7.2.symbols.gmt"
 for(file in files){
   data <- read.csv(file)
