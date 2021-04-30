@@ -12,7 +12,7 @@ dependencies:
   - conda-forge::markdown=3.3.4
   - conda-forge::pandas=1.1.5
   - conda-forge::perl=5.26.2
-  - conda-forge::pigz=2.4
+  - conda-forge::pigz=2.6
   - conda-forge::pymdown-extensions=8.1.1
   - conda-forge::pygments=2.8.1
   - conda-forge::r-base=4.0.3
