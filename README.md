@@ -13,7 +13,7 @@
 ## Introduction
 
 <!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-**nf-core/hicar** is a bioinformatics best-practise analysis pipeline for
+**nf-core/hicar** is a bioinformatics best-practise analysis pipeline for [HiCAR](https://www.biorxiv.org/content/10.1101/2020.11.02.366062v2) data.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
