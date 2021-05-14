@@ -37,13 +37,12 @@ jobs:
 
       - name: Build new docker image
         if: env.MATCHED_FILES
-        run: docker build --no-cache . -t nfcore/hicar:dev
+        run: docker build --no-cache . -t nfcore/hicar:1.0.1
 
       - name: Pull docker image
         if: ${{ !env.MATCHED_FILES }}
         run: |
-          docker pull nfcore/hicar:dev
-          docker tag nfcore/hicar:dev nfcore/hicar:dev
+          docker pull nfcore/hicar:1.0.1
 
       - name: Install Nextflow
         env:

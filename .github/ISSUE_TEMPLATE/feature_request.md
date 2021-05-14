@@ -1,11 +1,11 @@
 ---
 name: Feature request
-about: Suggest an idea for the nf-core/testpipeline pipeline
+about: Suggest an idea for the nf-core/hicar pipeline
 labels: enhancement
 ---
 
 <!--
-# nf-core/testpipeline feature request
+# nf-core/hicar feature request
 
 Hi there!
 
