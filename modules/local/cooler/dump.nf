@@ -36,7 +36,7 @@ process COOLER_DUMP {
         $options.args \\
         $cool | \\
       awk -v setname=${prefix} -v outdir=${outdir} -F \$"\t" \\
-      '{{if(\$1 == \$4) {{print > outdir"/"setname"."\$1".long.intra.bedpe"}} }}'
+      '{if(\$1 == \$4) {print > outdir"/"setname"."\$1".long.intra.bedpe"} }'
 
     echo \$(cooler --version 2>&1) | sed 's/cooler, version //' > ${software}.version.txt
     """

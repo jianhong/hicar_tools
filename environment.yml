@@ -11,7 +11,7 @@ dependencies:
   - conda-forge::bzip2=1.0.8
   - conda-forge::markdown=3.3.4
   - conda-forge::pandas=1.2.4
-  - conda-forge::perl=5.32.0.1
+  - conda-forge::perl=5.32.0
   - conda-forge::pigz=2.6
   - conda-forge::pymdown-extensions=8.2
   - conda-forge::pygments=2.9.0
@@ -20,7 +20,6 @@ dependencies:
   - conda-forge::r-magrittr=2.0.1
   - conda-forge::r-nlme=3.1_152
   - conda-forge::r-optparse=1.6.6
-  # TODO nf-core: Add required software dependencies here
   - bioconda::bioconductor-biomart=2.46.3
   - bioconda::bioconductor-chippeakanno=3.24.1
   - bioconda::bioconductor-clusterprofiler=3.18.1

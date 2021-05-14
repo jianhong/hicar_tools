@@ -30,7 +30,7 @@ process MAPS_FEND {
     script:
     def software = "MAPS"
     """
-    awk -vOFS="\t" '{{print \$3,\$4,\$4,\$3"_"\$1,"0",\$2}}' $cut | \\
+    awk -vOFS="\t" '{print \$3,\$4,\$4,\$3"_"\$1,"0",\$2}' $cut | \\
     bedtools slop -s -l 0 \\
         -r $bin_size -g $chrom_sizes > \\
         ${cut}.bed

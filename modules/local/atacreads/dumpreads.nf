@@ -32,7 +32,7 @@ process DUMPREADS {
     def outdir   = "${meta.id}-${params.species}"
     """
     mkdir -p $outdir
-    cat $bed | zcat | awk -v setname=${prefix} -v outdir=${outdir}  -F \$"\t"  'BEGIN {{OFS=FS}};{{print \$1,\$2,\$3 > outdir"/"setname"."\$1".shrt.vip.bed" }}'
+    cat $bed | zcat | awk -v setname=${prefix} -v outdir=${outdir}  -F \$"\t"  'BEGIN {OFS=FS};{print \$1,\$2,\$3 > outdir"/"setname"."\$1".shrt.vip.bed"}'
 
     echo \$(awk --version 2>&1) | sed -e "s/GNU Awk //g; s/, API.*\$//" > ${software}.version.txt
     """
