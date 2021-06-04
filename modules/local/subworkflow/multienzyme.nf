@@ -28,7 +28,7 @@ workflow MAPS_MULTIENZYME {
     if(!params.mappability){
         GENMAP_MAPPABILITY(fasta)
         ch_version = ch_version.mix(GENMAP_MAPPABILITY.out.version)
-        mappability = UCSC_WIGTOBIGWIG(GENMAP_MAPPABILITY.out.wig, chromsizes).out.bw
+        mappability = UCSC_WIGTOBIGWIG(GENMAP_MAPPABILITY.out.wig, chromsizes).bw
         ch_version = ch_version.mix(UCSC_WIGTOBIGWIG.out.version)
     }else{
         mappability = file(params.mappability)
