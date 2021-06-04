@@ -36,7 +36,7 @@ workflow MAPS_MULTIENZYME {
     seqlevelsstyle = SEQLEVELS_STYLE(MAPS_FEND.out.bed.map{it[1]}.collect().map{it[0]}).seqlevels_style
     if("$seqlevelsstyle" != "UCSC"){
         ENSEMBL_UCSC_CONVERT(MAPS_FEND.out.bed)
-        ENSEMBL_UCSC_CONVERT2(["", mappability])
+        ENSEMBL_UCSC_CONVERT2(mappability.map{[cool_bin, it]})
         ch_version = ch_version.mix(ENSEMBL_UCSC_CONVERT.out.version)
         UCSC_BIGWIGAVERAGEOVERBED(ENSEMBL_UCSC_CONVERT.out.tab, ENSEMBL_UCSC_CONVERT2.out.tab.map{it[1]})
     }else{
