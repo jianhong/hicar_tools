@@ -31,7 +31,7 @@ workflow MAPS_MULTIENZYME {
         mappability = UCSC_WIGTOBIGWIG(GENMAP_MAPPABILITY.out.wig, chromsizes).bw
         ch_version = ch_version.mix(UCSC_WIGTOBIGWIG.out.version)
     }else{
-        mappability = file(params.mappability)
+        mappability = Channel.fromPath(params.mappability, checkIfExists: true)
     }
     seqlevelsstyle = SEQLEVELS_STYLE(MAPS_FEND.out.bed.map{it[1]}.collect().map{it[0]}).seqlevels_style
     if("$seqlevelsstyle" != "UCSC"){
