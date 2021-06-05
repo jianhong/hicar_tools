@@ -23,7 +23,7 @@ workflow PAIRTOOLS_PAIRE {
   take:
   ch_bam      // channel: [ val(meta), [bam] ]
   chromsizes  // channel: [ path(chromsizes) ]
-  frag        //channel: [ path(fragment) ]
+  frag        // channel: [ path(fragment) ]
 
   main:
   //raw pairs, output raw.pairsam
