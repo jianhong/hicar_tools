@@ -35,10 +35,10 @@ If md5_1 or md5_2 is provided, the checksums of the files will be check to make 
 
 | group | replicate | fastq_1 | fastq_2 | md5_1 | md5_2 |
 |-------|-----------|---------|---------|-------|-------|
-| WT | 1 | fastq/WT1_R1.fastq.gz| fastq/WT1_R2.fastq.gz |  |  |
-| WT | 2 | fastq/WT2_R1.fastq.gz| fastq/WT2_R2.fastq.gz |  |  |
-| KD | 1 | fastq/KD1_R1.fastq.gz| fastq/KD1_R2.fastq.gz |  |  |
-| KD | 2 | fastq/KD2_R1.fastq.gz| fastq/KD2_R2.fastq.gz |  |  |
+| WT | 1 | /absolute/path/to/fastq/WT1_R1.fastq.gz| /absolute/path/to/fastq/WT1_R2.fastq.gz |  |  |
+| WT | 2 | /absolute/path/to/fastq/WT2_R1.fastq.gz| /absolute/path/to/fastq/WT2_R2.fastq.gz |  |  |
+| KD | 1 | /absolute/path/to/fastq/KD1_R1.fastq.gz| /absolute/path/to/fastq/KD1_R2.fastq.gz |  |  |
+| KD | 2 | /absolute/path/to/fastq/KD2_R1.fastq.gz| /absolute/path/to/fastq/KD2_R2.fastq.gz |  |  |
 
 ### Profile file
 
