@@ -165,8 +165,8 @@ include { MULTIQC  } from './modules/nf-core/software/multiqc/main'  addParams(o
 
 ch_reads = ch_input.map{
   row ->
-      fastq1 = row.remove("fastq_1")
-      fastq2 = row.remove("fastq_2")
+      fastq1 = file(row.remove("fastq_1"), checkIfExists: true)
+      fastq2 = file(row.remove("fastq_2"), checkIfExists: true)
       meta = row
       meta.id = row.group + "_REP" + row.replicate
       [meta, [fastq1, fastq2]]
