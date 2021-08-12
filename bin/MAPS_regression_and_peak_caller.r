@@ -318,7 +318,7 @@ for (r in runs) {
     singletons = data.frame()
     for (fdr_cutoff in FDR) {
         peaks_and = if(nrow(mx_combined_and)>0) subset(mx_combined_and, count >= COUNT_CUTOFF & ratio2 >= RATIO_CUTOFF & -log10(fdr) > fdr_cutoff) else data.frame()
-        peaks_xor = if(nrow(mx_combined_and)>0) subset(mx_combined_xor, count >= COUNT_CUTOFF & ratio2 >= RATIO_CUTOFF & -log10(fdr) > fdr_cutoff) else data.frame()
+        peaks_xor = if(nrow(mx_combined_xor)>0) subset(mx_combined_xor, count >= COUNT_CUTOFF & ratio2 >= RATIO_CUTOFF & -log10(fdr) > fdr_cutoff) else data.frame()
         print("finding peaks")
         peaks = rbind(peaks_and, peaks_xor)
         if (dim(peaks)[1] == 0) {

@@ -28,13 +28,13 @@ process MAPS_FEND {
     path "*.version.txt"                    , emit: version
 
     script:
-    def software = "MAPS"
+    def software = "bedtools"
     """
     awk -vOFS="\t" '{print \$3,\$4,\$4,\$3"_"\$1,"0",\$2}' $cut | \\
     bedtools slop -s -l 0 \\
         -r $bin_size -g $chrom_sizes > \\
         ${cut}.bed
 
-    echo '1.1.0' > ${software}.version.txt
+    bedtools --version | sed -e "s/bedtools v//g" > ${software}.version.txt
     """
 }

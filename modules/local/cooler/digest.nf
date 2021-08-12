@@ -12,7 +12,7 @@ process COOLER_DIGEST {
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') },
         enabled: options.publish
 
-    conda (params.conda ? "bioconda::cooler=0.8.11 bioconda::biopython=1.78" : null)
+    conda (params.conda ? "bioconda::cooler=0.8.11 bioconda::biopython=1.70" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/cooler:0.8.11--pyh3252c3a_0"
     } else {
